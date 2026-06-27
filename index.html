@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play Toon Maze, a premium playful cartoon arcade snake game with moving backgrounds, multiple mazes, synthesized audio, particles, and custom anime skins.">
+  <title>TOON MAZE // Playful Cartoon Arcade</title>
+  <!-- Google Fonts for Retro/Arcade Look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-doraemon">
+  <!-- Custom Theme Animated Floating Background elements -->
+  <div class="theme-background-floating" id="bgFloating"></div>
+  <!-- Scanline CRT screen background element (subtle ambient animation) -->
+  <div class="ambient-glow" id="ambientGlow"></div>
+
+  <div class="app-container">
+    <header class="game-header">
+      <h1 class="glitch-title" data-text="TOON MAZE">TOON MAZE</h1>
+      <p class="subtitle">PLAYFUL CARTOON EDITION</p>
+    </header>
+
+    <main class="game-layout">
+      <!-- SIDEBAR LEFT: CONTROLS & SETTINGS -->
+      <section class="side-panel settings-panel" aria-label="Game Settings">
+        <div class="panel-header">
+          <h2>SETTINGS</h2>
+        </div>
+        <div class="panel-content">
+          <!-- Theme Selection -->
+          <div class="setting-group">
+            <label for="themeSelect">COLOR THEME</label>
+            <div class="custom-select-wrapper">
+              <select id="themeSelect" class="styled-select">
+                <option value="doraemon" selected>DORAEMON (DORA CAKE)</option>
+                <option value="squidgame">SQUID GAME (DALGONA)</option>
+                <option value="shinchan">SHINCHAN (CHOCOBI)</option>
+                <option value="tomjerry">TOM & JERRY (CHEESE)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Maze Map Selection -->
+          <div class="setting-group">
+            <label for="mazeSelect">SELECT MAZE</label>
+            <div class="custom-select-wrapper">
+              <select id="mazeSelect" class="styled-select">
+                <option value="none">CLASSIC FIELD</option>
+                <option value="box">ARCADE BOX</option>
+                <option value="cross">CROSSROAD PLUS</option>
+                <option value="tunnels">LABYRINTH TUNNELS</option>
+                <option value="spiral">SPIRAL LABYRINTH</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Difficulty / Speed -->
+          <div class="setting-group">
+            <label for="speedSelect">DIFFICULTY</label>
+            <div class="custom-select-wrapper">
+              <select id="speedSelect" class="styled-select">
+                <option value="easy">EASY (NORMAL)</option>
+                <option value="medium" selected>MEDIUM (HARD)</option>
+                <option value="hard">HARDCORE (INSANE)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sound Effects -->
+          <div class="setting-group toggle-group">
+            <label for="audioToggle">SOUND EFFECTS</label>
+            <label class="switch">
+              <input type="checkbox" id="audioToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- CRT Mode Overlay Toggle -->
+          <div class="setting-group toggle-group">
+            <label for="crtToggle">CRT MONITOR SIM</label>
+            <label class="switch">
+              <input type="checkbox" id="crtToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Grid Lines Toggle -->
+          <div class="setting-group toggle-group">
+            <label for="gridToggle">PLAYFIELD GRID</label>
+            <label class="switch">
+              <input type="checkbox" id="gridToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Controls Help -->
+          <div class="instructions-card">
+            <h3>HOW TO PLAY</h3>
+            <ul class="keyboard-controls">
+              <li><span>W / ↑</span> Up</li>
+              <li><span>S / ↓</span> Down</li>
+              <li><span>A / ←</span> Left</li>
+              <li><span>D / →</span> Right</li>
+              <li><span>Space</span> Pause / Play</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER PANEL: CRT MONITOR & PLAYFIELD -->
+      <section class="screen-panel" aria-label="Game Playfield">
+        <div class="cabinet-bezel">
+          <!-- The outer ridge of our simulated vintage display -->
+          <div class="crt-screen-wrapper" id="crtWrapper">
+            <!-- Scanline / curvature overlays -->
+            <div class="crt-screen-overlay"></div>
+            <div class="crt-scanlines"></div>
+            <div class="crt-glare"></div>
+            
+            <div class="canvas-container">
+              <!-- Actual Snake Canvas -->
+              <canvas id="gameCanvas" width="600" height="480"></canvas>
+
+              <!-- Splash screen overlays -->
+              <div class="screen-overlay active" id="splashScreen">
+                <div class="splash-content">
+                  <div class="splash-logo">RETRO SNAKE</div>
+                  <div class="splash-pulse">INSERT COIN TO START</div>
+                  <button id="startBtn" class="action-btn">PLAY NOW</button>
+                </div>
+              </div>
+
+              <!-- Paused screen overlay -->
+              <div class="screen-overlay" id="pausedScreen">
+                <div class="splash-content">
+                  <div class="splash-logo text-pulsing">PAUSED</div>
+                  <p class="splash-text">PRESS SPACEBAR TO RESUME</p>
+                  <button id="resumeBtn" class="action-btn">RESUME</button>
+                </div>
+              </div>
+
+              <!-- Game over screen overlay -->
+              <div class="screen-overlay" id="gameOverScreen">
+                <div class="splash-content">
+                  <div class="splash-logo text-danger">GAME OVER</div>
+                  <p class="final-score-text">FINAL SCORE: <span id="finalScore" class="glow-value">000</span></p>
+                  
+                  <div class="high-score-entry" id="highScoreEntryForm">
+                    <p class="new-record-alert">NEW HIGH SCORE!</p>
+                    <label for="playerNameInput">ENTER YOUR INITIALS:</label>
+                    <div class="initials-entry">
+                      <input type="text" id="playerNameInput" maxlength="3" placeholder="AAA" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                      <button id="saveScoreBtn" class="action-btn save-btn">SAVE</button>
+                    </div>
+                  </div>
+
+                  <button id="restartBtn" class="action-btn">PLAY AGAIN</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SIDEBAR RIGHT: STATS & LEADERBOARD -->
+      <section class="side-panel stats-panel" aria-label="Game Statistics">
+        <div class="panel-header">
+          <h2>STATS</h2>
+        </div>
+        <div class="panel-content">
+          <!-- Active scores -->
+          <div class="stats-card">
+            <div class="stat-row">
+              <span class="stat-label">SCORE</span>
+              <span class="stat-val" id="scoreDisplay">0000</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">SPEED</span>
+              <span class="stat-val" id="speedDisplay">LVL 1</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">LENGTH</span>
+              <span class="stat-val" id="lengthDisplay">4</span>
+            </div>
+          </div>
+
+          <!-- Leaderboard / High Scores -->
+          <div class="leaderboard-card">
+            <h3>HIGH SCORES</h3>
+            <ol id="leaderboardList" class="leaderboard-list">
+              <li><span class="rank">1ST</span> <span class="name">SLT</span> <span class="score">0150</span></li>
+              <li><span class="rank">2ND</span> <span class="name">JON</span> <span class="score">0120</span></li>
+              <li><span class="rank">3RD</span> <span class="name">NES</span> <span class="score">0090</span></li>
+              <li><span class="rank">4TH</span> <span class="name">CRT</span> <span class="score">0070</span></li>
+              <li><span class="rank">5TH</span> <span class="name">SNK</span> <span class="score">0050</span></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- MOBILE CONTROL PAD -->
+    <div class="mobile-controls-wrapper" id="mobileControls">
+      <div class="d-pad">
+        <button id="dpadUp" class="dpad-btn up" aria-label="Move Up">▲</button>
+        <button id="dpadLeft" class="dpad-btn left" aria-label="Move Left">◀</button>
+        <button id="dpadCenter" class="dpad-btn center" aria-label="Pause/Action">⧗</button>
+        <button id="dpadRight" class="dpad-btn right" aria-label="Move Right">▶</button>
+        <button id="dpadDown" class="dpad-btn down" aria-label="Move Down">▼</button>
+      </div>
+    </div>
+
+    <footer class="game-footer">
+      <p>&copy; 2026 Retro Arcade Corp. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

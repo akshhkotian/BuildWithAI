@@ -1,0 +1,21 @@
+# Node
+node_modules/
+.npm
+npm-debug.log*
+
+# Vercel
+.vercel/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
