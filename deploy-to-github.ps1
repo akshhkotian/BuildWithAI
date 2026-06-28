@@ -49,7 +49,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Add remote and push
-$repoUrl = "https://github.com/akshhkotian/slithify.git"
+$repoUrl = "https://github.com/akshhkotian/BuildWithAI.git"
 Write-Host "[5/5] Connecting to GitHub and pushing..." -ForegroundColor Green
 Write-Host "Remote URL: $repoUrl" -ForegroundColor Gray
 
@@ -73,31 +73,31 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "   SUCCESS! Code pushed to GitHub!      " -ForegroundColor Green
     Write-Host "========================================" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Your GitHub repo: https://github.com/akshhkotian/slithify" -ForegroundColor Cyan
+    Write-Host "Your GitHub repo: https://github.com/akshhkotian/BuildWithAI" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "NEXT STEP - Deploy to Vercel:" -ForegroundColor Yellow
     Write-Host "1. Go to: https://vercel.com/new" -ForegroundColor White
     Write-Host "2. Click 'Import Git Repository'" -ForegroundColor White
-    Write-Host "3. Select 'slithify' from the list" -ForegroundColor White
+    Write-Host "3. Select 'BuildWithAI' from the list" -ForegroundColor White
     Write-Host ""
-    Write-Host "Your game will be live at: https://slithify.vercel.app" -ForegroundColor Cyan
+    Write-Host "Your game will be live at: https://BuildWithAI.vercel.app" -ForegroundColor Cyan
     Write-Host ""
     
     # Open GitHub repo in browser
-    Start-Process "https://github.com/akshhkotian/slithify"
+    Start-Process "https://github.com/akshhkotian/BuildWithAI"
     Start-Process "https://vercel.com/new"
 } else {
     Write-Host ""
     Write-Host "PUSH FAILED. Common fixes:" -ForegroundColor Red
     Write-Host ""
     Write-Host "Option 1 - Create the repo first:" -ForegroundColor Yellow
-    Write-Host "  Go to https://github.com/new and create 'slithify' (empty, no README)" -ForegroundColor White
+    Write-Host "  Go to https://github.com/new and create 'BuildWithAI' (empty, no README)" -ForegroundColor White
     Write-Host "  Then run this script again." -ForegroundColor White
     Write-Host ""
     Write-Host "Option 2 - Use a Personal Access Token:" -ForegroundColor Yellow
     Write-Host "  Go to: https://github.com/settings/tokens/new" -ForegroundColor White
     Write-Host "  Create token with 'repo' scope" -ForegroundColor White
-    Write-Host "  Run: git push https://TOKEN@github.com/akshhkotian/slithify.git main" -ForegroundColor White
+    Write-Host "  Run: git push https://TOKEN@github.com/akshhkotian/BuildWithAI.git main" -ForegroundColor White
 }
 
 Write-Host ""
