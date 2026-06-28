@@ -138,6 +138,54 @@
   --grid-color: rgba(140, 140, 158, 0.04);
 }
 
+/* 5. Paw Patrol Theme (Rescue Blue & Pup Badge Yellow) */
+.theme-pawpatrol {
+  --bg-color: #f0f6ff;
+  --bg-gradient: radial-gradient(circle at 50% 50%, #ffffff 0%, #d5e6f9 100%);
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --panel-border: rgba(30, 144, 255, 0.2);
+  --panel-shadow: rgba(30, 144, 255, 0.05);
+  --text-primary: #1f2e4d;
+  --text-secondary: #0055ff;
+  --text-muted: #788ea6;
+  --accent-color: #0055ff;
+  --accent-glow: 0 4px 12px rgba(30, 144, 255, 0.25);
+  --secondary-accent: #ffcc00;
+  --secondary-glow: 0 4px 10px rgba(255, 204, 0, 0.2);
+  --snake-color: #0055ff;
+  --snake-head-color: #ffcc00;
+  --snake-glow: 0 2px 8px rgba(30, 144, 255, 0.2);
+  --food-color: #eae0d5;
+  --food-glow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --cabinet-bezel-bg: #eef3fa;
+  --cabinet-bezel-border: #cfe0f5;
+  --grid-color: rgba(0, 85, 255, 0.03);
+}
+
+/* 6. Masha and the Bear Theme (Berry Pink & Forest Green) */
+.theme-masha {
+  --bg-color: #fcf6f8;
+  --bg-gradient: radial-gradient(circle at 50% 50%, #ffffff 0%, #ebd7de 100%);
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --panel-border: rgba(224, 47, 98, 0.18);
+  --panel-shadow: rgba(224, 47, 98, 0.04);
+  --text-primary: #4a2c3a;
+  --text-secondary: #e02f62;
+  --text-muted: #a68593;
+  --accent-color: #e02f62;
+  --accent-glow: 0 4px 12px rgba(224, 47, 98, 0.25);
+  --secondary-accent: #4caf50;
+  --secondary-glow: 0 4px 10px rgba(76, 175, 80, 0.2);
+  --snake-color: #e02f62;
+  --snake-head-color: #ffd8a8;
+  --snake-glow: 0 2px 8px rgba(224, 47, 98, 0.25);
+  --food-color: #4caf50;
+  --food-glow: 0 2px 8px rgba(76, 175, 80, 0.2);
+  --cabinet-bezel-bg: #f5ebef;
+  --cabinet-bezel-border: #e6d5db;
+  --grid-color: rgba(224, 47, 98, 0.03);
+}
+
 /* --- Base Resets --- */
 * {
   margin: 0;
@@ -978,6 +1026,42 @@ input:checked + .slider:before {
   transform: scale(0.92);
 }
 
+/* Theme Paw Patrol D-pad overrides */
+.theme-pawpatrol .d-pad {
+  background: #f0f6ff;
+  border-color: #cfe0f5;
+  box-shadow: 0 6px 15px rgba(0, 85, 255, 0.08), inset 0 2px 4px #ffffff;
+}
+.theme-pawpatrol .dpad-btn {
+  background: #ffffff;
+  border-color: #cfe0f5;
+  color: #0055ff;
+}
+.theme-pawpatrol .dpad-btn:active {
+  background: #ffcc00;
+  border-color: #ffcc00;
+  color: #1f2e4d;
+  transform: scale(0.92);
+}
+
+/* Theme Masha and the Bear D-pad overrides */
+.theme-masha .d-pad {
+  background: #f5ebef;
+  border-color: #e6d5db;
+  box-shadow: 0 6px 15px rgba(224, 47, 98, 0.08), inset 0 2px 4px #ffffff;
+}
+.theme-masha .dpad-btn {
+  background: #ffffff;
+  border-color: #e6d5db;
+  color: #e02f62;
+}
+.theme-masha .dpad-btn:active {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: #ffffff;
+  transform: scale(0.92);
+}
+
 .dpad-btn.up {
   top: 8px;
   left: 51px;
@@ -1009,6 +1093,8 @@ input:checked + .slider:before {
 .theme-squidgame .dpad-btn.center { background: #f7c5d9; color: #ff007f; }
 .theme-shinchan .dpad-btn.center { background: #ffe599; color: #e6b800; }
 .theme-tomjerry .dpad-btn.center { background: #dcdce0; color: #ff9900; }
+.theme-pawpatrol .dpad-btn.center { background: #cfe0f5; color: #0055ff; }
+.theme-masha .dpad-btn.center { background: #e6d5db; color: #e02f62; }
 
 .dpad-btn.right {
   top: 51px;

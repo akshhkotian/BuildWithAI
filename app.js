@@ -174,6 +174,10 @@ class SlithifyGame {
         this.ambientGlow.style.background = 'radial-gradient(circle, rgba(255, 204, 0, 0.08) 0%, rgba(0, 0, 0, 0) 70%)';
       } else if (theme === 'tomjerry') {
         this.ambientGlow.style.background = 'radial-gradient(circle, rgba(140, 140, 158, 0.08) 0%, rgba(0, 0, 0, 0) 70%)';
+      } else if (theme === 'pawpatrol') {
+        this.ambientGlow.style.background = 'radial-gradient(circle, rgba(0, 85, 255, 0.08) 0%, rgba(0, 0, 0, 0) 70%)';
+      } else if (theme === 'masha') {
+        this.ambientGlow.style.background = 'radial-gradient(circle, rgba(224, 47, 98, 0.08) 0%, rgba(0, 0, 0, 0) 70%)';
       }
     }
 
@@ -987,6 +991,53 @@ class SlithifyGame {
       ctx.arc(center + size * 0.4, centery + size * 0.2, 1.5 * pulse, 0, Math.PI * 2);
       ctx.arc(center - size * 0.1, centery - size * 0.2, 2.5 * pulse, 0, Math.PI * 2);
       ctx.fill();
+    } else if (this.state.theme === 'pawpatrol') {
+      // DOG BONE biscuit
+      ctx.shadowColor = 'rgba(234, 224, 213, 0.4)';
+      ctx.shadowBlur = 6 * pulse;
+      ctx.fillStyle = '#f5ebe0';
+      ctx.strokeStyle = '#d5c7b4';
+      ctx.lineWidth = 1.5;
+
+      const size = r * 0.95 * pulse;
+      ctx.beginPath();
+      ctx.rect(center - size * 0.6, centery - size * 0.25, size * 1.2, size * 0.5);
+      ctx.arc(center - size * 0.6, centery - size * 0.25, size * 0.3, 0, Math.PI * 2);
+      ctx.arc(center - size * 0.6, centery + size * 0.25, size * 0.3, 0, Math.PI * 2);
+      ctx.arc(center + size * 0.6, centery - size * 0.25, size * 0.3, 0, Math.PI * 2);
+      ctx.arc(center + size * 0.6, centery + size * 0.25, size * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+    } else if (this.state.theme === 'masha') {
+      // FOREST STRAWBERRY: Pinkish-red berry with green leaf
+      ctx.shadowColor = 'rgba(224, 47, 98, 0.4)';
+      ctx.shadowBlur = 6 * pulse;
+
+      // Leaf first
+      ctx.fillStyle = '#4caf50';
+      ctx.beginPath();
+      ctx.ellipse(center, centery - r * 0.65 * pulse, r * 0.3 * pulse, r * 0.15 * pulse, -0.2, 0, Math.PI * 2);
+      ctx.ellipse(center - 2, centery - r * 0.7 * pulse, r * 0.25 * pulse, r * 0.15 * pulse, 0.3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Berry heart/oval shape
+      ctx.fillStyle = '#ff3366'; // Strawberry red
+      ctx.strokeStyle = '#d01b4c';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(center, centery - r * 0.4 * pulse);
+      ctx.bezierCurveTo(center + r * 0.9 * pulse, centery - r * 0.4 * pulse, center + r * 0.8 * pulse, centery + r * pulse, center, centery + r * pulse);
+      ctx.bezierCurveTo(center - r * 0.8 * pulse, centery + r * pulse, center - r * 0.9 * pulse, centery - r * 0.4 * pulse, center, centery - r * 0.4 * pulse);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Seeds
+      ctx.fillStyle = '#ffd700';
+      ctx.fillRect(center - 2, centery - 2, 0.8, 1.2);
+      ctx.fillRect(center + 2, centery + 1, 0.8, 1.2);
+      ctx.fillRect(center - 1, centery + 4, 0.8, 1.2);
     }
     ctx.restore();
   }
@@ -1241,6 +1292,122 @@ class SlithifyGame {
       ctx.moveTo(cx + 4, cy + 3.5); ctx.lineTo(cx + 9, cy + 3);
       ctx.moveTo(cx + 4, cy + 4.5); ctx.lineTo(cx + 10, cy + 5);
       ctx.stroke();
+    } else if (this.state.theme === 'pawpatrol') {
+      // 5. PAW PATROL (Chase): Blue police cap, pup ears, dog face
+      ctx.fillStyle = '#8B5A2B'; // Brown fur base
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Police Cap (Blue cap at the top)
+      ctx.fillStyle = '#0055ff';
+      ctx.beginPath();
+      ctx.arc(cx, cy - r * 0.35, r * 0.85, Math.PI, 0);
+      ctx.lineTo(cx + r, cy - r * 0.35);
+      ctx.closePath();
+      ctx.fill();
+
+      // Cap Visor
+      ctx.fillStyle = '#111111';
+      ctx.fillRect(cx - r * 0.75 + dx * 0.5, cy - r * 0.35 + dy * 0.5, r * 1.5, 2.5);
+
+      // Yellow Badge on cap
+      ctx.fillStyle = '#ffcc00';
+      ctx.beginPath();
+      ctx.arc(cx, cy - r * 0.65, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cute floppy brown dog ears on the sides
+      ctx.fillStyle = '#5c3a21'; // Darker brown
+      ctx.beginPath();
+      ctx.ellipse(cx - r + 1, cy, 2.2, 4.5, -0.2, 0, Math.PI * 2);
+      ctx.ellipse(cx + r - 1, cy, 2.2, 4.5, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Snout & Nose
+      ctx.fillStyle = '#d2b48c'; // Tan snout
+      ctx.beginPath();
+      ctx.arc(cx + dx * 1.2, cy + dy * 1.2 + 2, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#000000'; // Black nose
+      ctx.beginPath();
+      ctx.arc(cx + dx * 1.4, cy + dy * 1.4 + 1, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Eyes
+      ctx.fillStyle = '#ffffff';
+      const ex1 = cx + dx + (dir === 'UP' || dir === 'DOWN' ? -2.5 : dx * 0.5 - 1.5);
+      const ex2 = cx + dx + (dir === 'UP' || dir === 'DOWN' ? 2.5 : dx * 0.5 + 1.5);
+      const ey = cy + dy - 1.5;
+      ctx.beginPath();
+      ctx.arc(ex1, ey, 2, 0, Math.PI * 2);
+      ctx.arc(ex2, ey, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(ex1 + (dx > 0 ? 0.3 : dx < 0 ? -0.3 : 0), ey, 0.8, 0, Math.PI * 2);
+      ctx.arc(ex2 + (dx > 0 ? 0.3 : dx < 0 ? -0.3 : 0), ey, 0.8, 0, Math.PI * 2);
+      ctx.fill();
+
+    } else if (this.state.theme === 'masha') {
+      // 6. MASHA: Magenta headscarf, blonde bangs, big eyes
+      // Scarf background
+      ctx.fillStyle = '#e02f62'; // Magenta
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Peach face
+      ctx.fillStyle = '#ffd8a8';
+      ctx.beginPath();
+      ctx.arc(cx + dx * 0.5, cy + dy * 0.5 + 1.2, r * 0.72, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Blonde hair fringe
+      ctx.fillStyle = '#ffe57f'; // Blonde yellow
+      ctx.beginPath();
+      ctx.arc(cx + dx * 0.4, cy - 2, r * 0.6, Math.PI * 1.1, Math.PI * 1.9);
+      ctx.lineTo(cx + dx * 0.4, cy - 2);
+      ctx.closePath();
+      ctx.fill();
+
+      // Large Green Eyes
+      const ex1 = cx + dx + (dir === 'UP' || dir === 'DOWN' ? -2.6 : dx * 0.5 - 2);
+      const ex2 = cx + dx + (dir === 'UP' || dir === 'DOWN' ? 2.6 : dx * 0.5 + 2);
+      const ey = cy + dy;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(ex1, ey, 2.4, 0, Math.PI * 2);
+      ctx.arc(ex2, ey, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+      // Green iris
+      ctx.fillStyle = '#4caf50';
+      ctx.beginPath();
+      ctx.arc(ex1, ey, 1.3, 0, Math.PI * 2);
+      ctx.arc(ex2, ey, 1.3, 0, Math.PI * 2);
+      ctx.fill();
+      // Black pupil
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(ex1, ey, 0.7, 0, Math.PI * 2);
+      ctx.arc(ex2, ey, 0.7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cute mouth
+      ctx.strokeStyle = '#e02f62';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx + dx * 1.1, cy + dy * 1.1 + 3.2, 1.4, 0, Math.PI);
+      ctx.stroke();
+
+      // Scarf knot below head
+      ctx.fillStyle = '#c2185b'; // Darker magenta
+      ctx.beginPath();
+      ctx.moveTo(cx - 3, cy + r - 2.5);
+      ctx.lineTo(cx + 3, cy + r - 2.5);
+      ctx.lineTo(cx, cy + r + 1);
+      ctx.closePath();
+      ctx.fill();
     }
     ctx.restore();
   }
@@ -1352,6 +1519,34 @@ class SlithifyGame {
       ctx.fillStyle = isTom ? '#f3f3f6' : '#ffd8a8';
       ctx.beginPath();
       ctx.arc(segCx, segCy + segmentR * 0.25, segmentR * 0.62, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (this.state.theme === 'pawpatrol') {
+      // Paw Patrol segment: alternated police blue and firefighter red!
+      const isBlue = idx % 2 === 0;
+      ctx.fillStyle = isBlue ? '#0055ff' : '#ff3333';
+      ctx.beginPath();
+      ctx.arc(segCx, segCy, segmentR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Yellow collar line
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(segCx, segCy, segmentR * 0.7, 0, Math.PI * 2);
+      ctx.stroke();
+
+    } else if (this.state.theme === 'masha') {
+      // Masha and Bear segment: Alternating Bear brown and Masha magenta dress!
+      const isMasha = idx % 2 === 0;
+      ctx.fillStyle = isMasha ? '#e02f62' : '#8d6e63';
+      ctx.beginPath();
+      ctx.arc(segCx, segCy, segmentR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // White polka-dot detail on Masha pink, or beige inner ear color on Bear brown
+      ctx.fillStyle = isMasha ? '#ffffff' : '#d7ccc8';
+      ctx.beginPath();
+      ctx.arc(segCx, segCy, segmentR * 0.35, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
@@ -1483,49 +1678,65 @@ class SlithifyGame {
     // Clear existing floating elements
     this.bgFloating.innerHTML = '';
 
-    // Define theme-specific moving characters and backgrounds
+    // Define theme-specific moving characters (strictly only show cartoon series characters!)
     let characters = [];
     if (theme === 'doraemon') {
-      // Doraemon, Nobita, Doracakes, bells, clouds, hearts
+      // Doraemon, Nobita, Shizuka, Suneo, Gian
       characters = [
-        { text: '💙', type: 'float-up' },
-        { text: '🥞', type: 'float-down' },
-        { text: '🔔', type: 'float-up' },
-        { text: '☁️', type: 'glide-right' },
         { text: '🐱', type: 'glide-left' }, // Doraemon
         { text: '👦', type: 'glide-right' }, // Nobita
-        { text: '🎈', type: 'float-up' }
+        { text: '👧', type: 'float-up' },    // Shizuka
+        { text: '🧒', type: 'float-down' },  // Suneo
+        { text: '👨', type: 'float-up' }     // Gian
       ];
     } else if (theme === 'squidgame') {
-      // Guards, Frontman, Dalgonas, piggy banks
+      // Circle Guard, Triangle Guard, Square Guard, Frontman, VIP Pig, Squid
       characters = [
-        { text: '🔺', type: 'float-up' },
         { text: '◯', type: 'float-down' },
+        { text: '🔺', type: 'float-up' },
         { text: '☐', type: 'float-up' },
         { text: '🎭', type: 'glide-right' }, // Frontman
-        { text: '🦑', type: 'glide-left' },  // Squid
-        { text: '🐷', type: 'float-up' },  // Piggy bank
-        { text: '🍪', type: 'float-down' }
+        { text: '🐷', type: 'float-down' },  // VIP Pig
+        { text: '🦑', type: 'glide-left' }   // Squid
       ];
     } else if (theme === 'shinchan') {
-      // Shinchan, Shiro, dinosaur, star biscuits
+      // Shinchan, Shiro, Masao, Kazama, Nene, Bo-chan
       characters = [
-        { text: '⭐', type: 'float-up' },
-        { text: '🐶', type: 'glide-right' }, // Shiro
-        { text: '🦖', type: 'glide-left' },  // Chocobi Dinosaur
         { text: '👦', type: 'glide-right' }, // Shinchan
-        { text: '🍬', type: 'float-down' },
-        { text: '✨', type: 'float-up' }
+        { text: '🐶', type: 'glide-left' },  // Shiro
+        { text: '👶', type: 'float-up' },    // Masao
+        { text: '👦', type: 'float-down' },  // Kazama
+        { text: '👧', type: 'float-up' },    // Nene
+        { text: '👃', type: 'float-down' }   // Bo-chan
       ];
     } else if (theme === 'tomjerry') {
-      // Tom cat, Jerry mouse, Spike, cheese slices, milk
+      // Tom, Jerry, Spike, Nibbles
       characters = [
-        { text: '🐱', type: 'glide-right', speed: '11s', delay: '-1s' },  // Tom chasing Jerry!
-        { text: '🐭', type: 'glide-right', speed: '11s', delay: '0s' },   // Jerry running ahead
-        { text: '🧀', type: 'float-up' },
-        { text: '🥛', type: 'float-down' },
+        { text: '🐱', type: 'glide-right', speed: '11s', delay: '-1s' }, // Tom
+        { text: '🐭', type: 'glide-right', speed: '11s', delay: '0s' },  // Jerry
         { text: '🐶', type: 'glide-left' }, // Spike
-        { text: '🐾', type: 'float-up' }
+        { text: '🐭', type: 'float-up' }    // Nibbles/Tuffy
+      ];
+    } else if (theme === 'pawpatrol') {
+      // Ryder, Chase, Marshall, Skye, Rubble, Rocky, Zuma
+      characters = [
+        { text: '👦', type: 'glide-right' }, // Ryder
+        { text: '👮', type: 'glide-left' },  // Chase
+        { text: '👨‍🚒', type: 'float-up' },    // Marshall
+        { text: '🚁', type: 'float-down' },  // Skye
+        { text: '👷', type: 'float-up' },    // Rubble
+        { text: '♻️', type: 'float-down' },  // Rocky
+        { text: '⛵', type: 'float-up' }     // Zuma
+      ];
+    } else if (theme === 'masha') {
+      // Masha, Bear, Tiger, Rabbit, Pig, Wolf
+      characters = [
+        { text: '👧', type: 'glide-right' }, // Masha
+        { text: '🐻', type: 'glide-left' },  // Bear
+        { text: '🐯', type: 'float-up' },    // Tiger
+        { text: '🐰', type: 'float-down' },  // Rabbit
+        { text: '🐷', type: 'float-up' },    // Pig
+        { text: '🐺', type: 'float-down' }   // Wolf
       ];
     }
 
@@ -1641,6 +1852,31 @@ class SlithifyGame {
         // Subtle vertical wood fiber arcs
         ctx.beginPath();
         ctx.arc(wx - size * 0.5, wy + size * 0.5, size * 0.9, Math.PI * 1.8, Math.PI * 2.2);
+        ctx.stroke();
+      } else if (this.state.theme === 'pawpatrol') {
+        // Paw Patrol Wall: Safety orange pylons / traffic cones
+        ctx.fillStyle = '#ff6600'; // Safety orange
+        ctx.fillRect(wx, wy, size, size);
+
+        // White reflective band
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(wx, wy + size * 0.35, size, size * 0.3);
+
+        // Black base plate
+        ctx.fillStyle = '#222222';
+        ctx.fillRect(wx, wy + size * 0.85, size, size * 0.15);
+
+      } else if (this.state.theme === 'masha') {
+        // Masha & Bear Wall: Cabin logs
+        ctx.fillStyle = '#8d6e63'; // Log brown
+        ctx.fillRect(wx, wy, size, size);
+
+        // Circular growth rings on logs
+        ctx.strokeStyle = '#4e342e';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(wx + size/2, wy + size/2, size * 0.4, 0, Math.PI * 2);
+        ctx.arc(wx + size/2, wy + size/2, size * 0.2, 0, Math.PI * 2);
         ctx.stroke();
       }
     });
@@ -1981,6 +2217,21 @@ class SoundEngine {
         [329.63, 1], [293.66, 1], [261.63, 1], [220.00, 1],
         [196.00, 1], [246.94, 1], [293.66, 1], [392.00, 1],
         [329.63, 2], [293.66, 2]
+      ];
+      this.bgmTickTime = 220;
+    } else if (theme === 'pawpatrol') {
+      // Heroic rescue theme
+      this.bgmMelody = [
+        [293.66, 1], [349.23, 1], [392.00, 1], [440.00, 2],
+        [440.00, 1], [392.00, 1], [349.23, 1], [293.66, 2],
+        [349.23, 1], [392.00, 1], [440.00, 1], [587.33, 4]
+      ];
+      this.bgmTickTime = 160;
+    } else if (theme === 'masha') {
+      // Whimsical folk accordion loop
+      this.bgmMelody = [
+        [392.00, 1], [493.88, 1], [587.33, 2], [523.25, 1], [440.00, 1], [392.00, 2],
+        [440.00, 1], [493.88, 1], [523.25, 2], [493.88, 1], [392.00, 1], [329.63, 2]
       ];
       this.bgmTickTime = 220;
     }
