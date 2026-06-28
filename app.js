@@ -1,8 +1,8 @@
 /* ==========================================================================
-   RETRO SNAKE - GAME ENGINE & SYSTEM LOGIC
+   SLITHIFY - GAME ENGINE & SYSTEM LOGIC
    ========================================================================== */
 
-class RetroSnakeGame {
+class SlithifyGame {
   constructor() {
     // Canvas & Context
     this.canvas = document.getElementById('gameCanvas');
@@ -98,17 +98,22 @@ class RetroSnakeGame {
     this.resumeBtn = document.getElementById('resumeBtn');
     this.restartBtn = document.getElementById('restartBtn');
     this.saveScoreBtn = document.getElementById('saveScoreBtn');
+
+    // Retro LCD HUD
+    this.hudScore = document.getElementById('hudScore');
+    this.hudSpeed = document.getElementById('hudSpeed');
+    this.hudLength = document.getElementById('hudLength');
   }
 
   /* --- Game Settings Configuration --- */
   loadSettings() {
     // Load local storage values if available
-    const theme = localStorage.getItem('retro_snake_theme') || 'doraemon';
-    const difficulty = localStorage.getItem('retro_snake_difficulty') || 'medium';
-    const maze = localStorage.getItem('retro_snake_maze') || 'none';
-    const sound = localStorage.getItem('retro_snake_sound') !== 'false';
-    const crt = localStorage.getItem('retro_snake_crt') !== 'false';
-    const grid = localStorage.getItem('retro_snake_grid') !== 'false';
+    const theme = localStorage.getItem('slithify_theme') || 'doraemon';
+    const difficulty = localStorage.getItem('slithify_difficulty') || 'medium';
+    const maze = localStorage.getItem('slithify_maze') || 'none';
+    const sound = localStorage.getItem('slithify_sound') !== 'false';
+    const crt = localStorage.getItem('slithify_crt') !== 'false';
+    const grid = localStorage.getItem('slithify_grid') !== 'false';
 
     this.state.theme = theme;
     this.state.difficulty = difficulty;
@@ -132,12 +137,12 @@ class RetroSnakeGame {
   }
 
   saveSettings() {
-    localStorage.setItem('retro_snake_theme', this.state.theme);
-    localStorage.setItem('retro_snake_difficulty', this.state.difficulty);
-    localStorage.setItem('retro_snake_maze', this.state.maze);
-    localStorage.setItem('retro_snake_sound', this.state.soundEnabled);
-    localStorage.setItem('retro_snake_crt', this.state.crtEnabled);
-    localStorage.setItem('retro_snake_grid', this.state.gridEnabled);
+    localStorage.setItem('slithify_theme', this.state.theme);
+    localStorage.setItem('slithify_difficulty', this.state.difficulty);
+    localStorage.setItem('slithify_maze', this.state.maze);
+    localStorage.setItem('slithify_sound', this.state.soundEnabled);
+    localStorage.setItem('slithify_crt', this.state.crtEnabled);
+    localStorage.setItem('slithify_grid', this.state.gridEnabled);
   }
 
   applyTheme(theme) {
@@ -274,6 +279,61 @@ class RetroSnakeGame {
         this.handleKeyPress('Space');
       });
     }
+
+    // Touch Swipes setup
+    this.setupTouchSwipe();
+  }
+
+  setupTouchSwipe() {
+    const target = this.crtWrapper || this.canvas;
+    if (!target) return;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    target.addEventListener('touchstart', (e) => {
+      if (this.state.gameStatus !== 'PLAYING') return;
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    target.addEventListener('touchmove', (e) => {
+      if (this.state.gameStatus === 'PLAYING') {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    target.addEventListener('touchend', (e) => {
+      if (this.state.gameStatus !== 'PLAYING') return;
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      
+      const dx = touchEndX - touchStartX;
+      const dy = touchEndY - touchStartY;
+      const absDx = Math.abs(dx);
+      const absDy = Math.abs(dy);
+      const threshold = 30; // Min swipe distance in pixels
+
+      if (Math.max(absDx, absDy) > threshold) {
+        if (absDx > absDy) {
+          // Horizontal swipe
+          if (dx > 0) {
+            this.handleDirectionInput('RIGHT');
+          } else {
+            this.handleDirectionInput('LEFT');
+          }
+        } else {
+          // Vertical swipe
+          if (dy > 0) {
+            this.handleDirectionInput('DOWN');
+          } else {
+            this.handleDirectionInput('UP');
+          }
+        }
+      }
+    }, { passive: true });
   }
 
   handleKeyPress(code) {
@@ -1165,16 +1225,23 @@ class RetroSnakeGame {
 
   /* --- HUD Interface Updater --- */
   updateHUD() {
-    this.scoreDisplay.textContent = String(this.state.score).padStart(4, '0');
-    this.lengthDisplay.textContent = String(this.state.snake.length || 0);
-
+    const scoreStr = String(this.state.score).padStart(4, '0');
+    const lengthStr = String(this.state.snake.length || 0);
     const speedLevel = Math.min(10, 1 + Math.floor(this.state.score / 50));
-    this.speedDisplay.textContent = `LVL ${speedLevel}`;
+    const speedStr = `LVL ${speedLevel}`;
+
+    this.scoreDisplay.textContent = scoreStr;
+    this.lengthDisplay.textContent = lengthStr;
+    this.speedDisplay.textContent = speedStr;
+
+    if (this.hudScore) this.hudScore.textContent = scoreStr;
+    if (this.hudLength) this.hudLength.textContent = lengthStr;
+    if (this.hudSpeed) this.hudSpeed.textContent = speedStr;
   }
 
   /* --- Leaderboard Logic --- */
   loadLeaderboard() {
-    const saved = localStorage.getItem('retro_snake_leaderboard');
+    const saved = localStorage.getItem('slithify_leaderboard');
     if (saved) {
       this.leaderboard = JSON.parse(saved);
     } else {
@@ -1192,7 +1259,7 @@ class RetroSnakeGame {
   }
 
   saveLeaderboardToStorage() {
-    localStorage.setItem('retro_snake_leaderboard', JSON.stringify(this.leaderboard));
+    localStorage.setItem('slithify_leaderboard', JSON.stringify(this.leaderboard));
   }
 
   displayLeaderboard() {
@@ -1657,5 +1724,5 @@ class SoundEngine {
 
 // Initialise Game on Window Load
 window.addEventListener('load', () => {
-  window.GameInstance = new RetroSnakeGame();
+  window.GameInstance = new SlithifyGame();
 });

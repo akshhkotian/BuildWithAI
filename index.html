@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Play Toon Maze, a premium playful cartoon arcade snake game with moving backgrounds, multiple mazes, synthesized audio, particles, and custom anime skins.">
-  <title>TOON MAZE // Playful Cartoon Arcade</title>
+  <meta name="description" content="Play Slithify, a premium playful cartoon arcade snake game with moving backgrounds, multiple mazes, synthesized audio, particles, and custom anime skins.">
+  <title>SLITHIFY // Playful Cartoon Arcade</title>
   <!-- Google Fonts for Retro/Arcade Look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
 
   <div class="app-container">
     <header class="game-header">
-      <h1 class="glitch-title" data-text="TOON MAZE">TOON MAZE</h1>
+      <h1 class="glitch-title" data-text="SLITHIFY">SLITHIFY</h1>
       <p class="subtitle">PLAYFUL CARTOON EDITION</p>
     </header>
 
@@ -120,6 +120,22 @@
             <div class="crt-scanlines"></div>
             <div class="crt-glare"></div>
             
+            <!-- Retro LCD Screen HUD -->
+            <div class="crt-hud">
+              <div class="hud-item">
+                <span class="hud-label">SCORE</span>
+                <span class="hud-value" id="hudScore">0000</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">SPEED</span>
+                <span class="hud-value" id="hudSpeed">LVL 1</span>
+              </div>
+              <div class="hud-item">
+                <span class="hud-label">LENGTH</span>
+                <span class="hud-value" id="hudLength">4</span>
+              </div>
+            </div>
+            
             <div class="canvas-container">
               <!-- Actual Snake Canvas -->
               <canvas id="gameCanvas" width="600" height="480"></canvas>
@@ -127,7 +143,7 @@
               <!-- Splash screen overlays -->
               <div class="screen-overlay active" id="splashScreen">
                 <div class="splash-content">
-                  <div class="splash-logo">RETRO SNAKE</div>
+                  <div class="splash-logo">SLITHIFY</div>
                   <div class="splash-pulse">INSERT COIN TO START</div>
                   <button id="startBtn" class="action-btn">PLAY NOW</button>
                 </div>

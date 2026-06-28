@@ -1,6 +1,6 @@
-# Toon Maze - Playful Cartoon Arcade Game
+# Slithify - Playful Cartoon Arcade Game
 
-A beautifully designed **light-aesthetic snake game** with **4 custom pop-culture cartoon themes**, **selectable maze layouts**, animated backgrounds, custom canvas character graphics, and synthesized 8-bit audio!
+A beautifully designed **light-aesthetic snake game** with **4 custom pop-culture cartoon themes**, **selectable maze layouts**, animated backgrounds, custom canvas character graphics, synthesized 8-bit audio, and full mobile-responsive layouts!
 
 ## 🎮 Themes
 
@@ -19,7 +19,7 @@ A beautifully designed **light-aesthetic snake game** with **4 custom pop-cultur
 - 🎵 Synthesized **8-bit sound effects** via Web Audio API (no audio files needed!)
 - ✨ **Particle explosion** effects when eating food
 - 🏅 **Top 5 Leaderboard** saved to localStorage
-- 📱 **Mobile-friendly** with virtual D-pad controls
+- 📱 **Mobile-friendly** with virtual D-pad and touch swipe controls
 - 💻 Vintage LCD handheld screen simulator with glass glare overlay
 
 ## 🚀 Play Now
