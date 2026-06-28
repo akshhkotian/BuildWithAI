@@ -1182,6 +1182,13 @@ input:checked + .slider:before {
   outline: none;
 }
 
+.theme-pill-btn svg {
+  display: block;
+  width: 25px;
+  height: 25px;
+  pointer-events: none;
+}
+
 .theme-pill-btn:hover {
   transform: scale(1.15);
 }

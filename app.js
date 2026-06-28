@@ -1678,65 +1678,110 @@ class SlithifyGame {
     // Clear existing floating elements
     this.bgFloating.innerHTML = '';
 
+    // Define theme-specific custom SVG character templates
+    const characterSVGs = {
+      // DORAEMON
+      doraemon: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="#0096ff"/><circle cx="20" cy="22" r="14" fill="#ffffff"/><ellipse cx="16" cy="14" rx="3.5" ry="5" fill="#ffffff" stroke="#0055bb" stroke-width="1"/><ellipse cx="24" cy="14" rx="3.5" ry="5" fill="#ffffff" stroke="#0055bb" stroke-width="1"/><circle cx="16" cy="15" r="1" fill="#000"/><circle cx="24" cy="15" r="1" fill="#000"/><circle cx="20" cy="18" r="3" fill="#ff3344"/><path d="M20 21v7" stroke="#333" stroke-width="1"/><path d="M12 25q8 7 16 0" stroke="#333" stroke-width="1" fill="none"/></svg>`,
+      nobita: `<svg viewBox="0 0 40 40" width="40" height="40"><path d="M8 15a12 12 0 0 1 24 0z" fill="#000"/><circle cx="20" cy="23" r="14" fill="#ffd8a8"/><circle cx="14" cy="20" r="4.5" fill="none" stroke="#000" stroke-width="1.5"/><circle cx="26" cy="20" r="4.5" fill="none" stroke="#000" stroke-width="1.5"/><path d="M18.5 20h3M17 26q3 2 6 0" stroke="#000" stroke-width="1" fill="none"/><circle cx="14" cy="20" r="1" fill="#000"/><circle cx="26" cy="20" r="1" fill="#000"/></svg>`,
+      shizuka: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="7" cy="22" r="4" fill="#663300"/><circle cx="33" cy="22" r="4" fill="#663300"/><circle cx="20" cy="22" r="14" fill="#ffd8a8"/><path d="M8 15a12 12 0 0 1 24 0z" fill="#663300"/><circle cx="14" cy="20" r="2.2" fill="#000"/><circle cx="26" cy="20" r="2.2" fill="#000"/><ellipse cx="10" cy="25" rx="3" ry="1.5" fill="rgba(255,102,102,0.4)"/><ellipse cx="30" cy="25" rx="3" ry="1.5" fill="rgba(255,102,102,0.4)"/><path d="M18 26q2 1.5 4 0" stroke="#333" stroke-width="1" fill="none"/></svg>`,
+      suneo: `<svg viewBox="0 0 40 40" width="40" height="40"><path d="M5 25l10-15l15 6z" fill="#222"/><circle cx="22" cy="23" r="13" fill="#ffd8a8"/><path d="M12 20h2M30 18h2M18 26q4 3 8-1" stroke="#333" stroke-width="1.2" fill="none"/><circle cx="17" cy="18" r="2" fill="#000"/><circle cx="27" cy="17" r="2" fill="#000"/></svg>`,
+      gian: `<svg viewBox="0 0 40 40" width="40" height="40"><path d="M6 16a14 14 0 0 1 28 0z" fill="#000"/><circle cx="20" cy="24" r="14" fill="#ffd8a8"/><ellipse cx="14" cy="21" rx="2.5" ry="1.8" fill="#000"/><ellipse cx="26" cy="21" rx="2.5" ry="1.8" fill="#000"/><circle cx="20" cy="24" r="2.2" fill="#ff5533"/><path d="M15 28q5 4 10 0" stroke="#000" stroke-width="1.5" fill="none"/></svg>`,
+      
+      // SHINCHAN
+      shinchan: `<svg viewBox="0 0 40 40" width="40" height="40"><ellipse cx="20" cy="22" rx="17" ry="14" fill="#ffd8a8"/><path d="M9 13q5-5 9-1" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M22 12q4-4 9 1" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="14" cy="17" rx="3" ry="3.5" fill="#000"/><ellipse cx="26" cy="17" rx="3" ry="3.5" fill="#000"/><circle cx="14.5" cy="15.5" r="0.8" fill="#fff"/><circle cx="26.5" cy="15.5" r="0.8" fill="#fff"/><ellipse cx="10" cy="24" rx="4" ry="2.5" fill="rgba(255, 102, 102, 0.45)"/><ellipse cx="30" cy="24" rx="4" ry="2.5" fill="rgba(255, 102, 102, 0.45)"/><path d="M18 25q2 3 4 0" stroke="#4a2211" stroke-width="1.5" fill="none"/></svg>`,
+      shiro: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#ffffff" stroke="#e0e0e0"/><circle cx="14" cy="18" r="2.2" fill="#000"/><circle cx="26" cy="18" r="2.2" fill="#000"/><ellipse cx="20" cy="24" rx="2.5" ry="1.8" fill="#000"/><ellipse cx="10" cy="16" rx="4" ry="2.5" fill="#ffffff" stroke="#e0e0e0"/><ellipse cx="30" cy="16" rx="4" ry="2.5" fill="#ffffff" stroke="#e0e0e0"/></svg>`,
+      masao: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#ffd8a8" stroke="#7bb0df" stroke-width="1"/><ellipse cx="13" cy="18" rx="2" ry="3" fill="#000"/><ellipse cx="27" cy="18" rx="2" ry="3" fill="#000"/><circle cx="13" cy="16.5" r="0.6" fill="#fff"/><circle cx="27" cy="16.5" r="0.6" fill="#fff"/><path d="M16 27q4-2 8 0" stroke="#000" stroke-width="1" fill="none"/><path d="M9 22q1-2 1-4" stroke="#000" stroke-width="0.8" fill="none"/></svg>`,
+      kazama: `<svg viewBox="0 0 40 40" width="40" height="40"><path d="M6 14a13 13 0 0 1 28 0z" fill="#003366"/><circle cx="20" cy="23" r="13" fill="#ffd8a8"/><circle cx="14" cy="19" r="2" fill="#000"/><circle cx="26" cy="19" r="2" fill="#000"/><path d="M17 26q3 1.5 6 0" stroke="#333" stroke-width="1" fill="none"/></svg>`,
+      nene: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="7" cy="24" r="4" fill="#996633"/><circle cx="33" cy="24" r="4" fill="#996633"/><circle cx="20" cy="22" r="14" fill="#ffd8a8"/><path d="M8 15a12 12 0 0 1 24 0z" fill="#996633"/><circle cx="14" cy="19" r="2" fill="#000"/><circle cx="26" cy="19" r="2" fill="#000"/><ellipse cx="11" cy="24" rx="3" ry="1.5" fill="rgba(255,102,102,0.4)"/><ellipse cx="29" cy="24" rx="3" ry="1.5" fill="rgba(255,102,102,0.4)"/><path d="M17 26q3 2 6 0" stroke="#333" stroke-width="1" fill="none"/></svg>`,
+      bo: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#ffd8a8"/><ellipse cx="14" cy="18" rx="1.8" ry="2.2" fill="#000"/><ellipse cx="26" cy="18" rx="1.8" ry="2.2" fill="#000"/><path d="M20 22q1 3 0 6" stroke="#b3e5fc" stroke-width="2.2" fill="none"/><path d="M17 27q3 1.5 6 0" stroke="#000" stroke-width="1" fill="none"/></svg>`,
+
+      // TOM & JERRY
+      tom: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="15" fill="#8c8c9e"/><polygon points="6,12 2,2 14,12" fill="#8c8c9e"/><polygon points="7,11 4,4 12,11" fill="#ffb3cc"/><polygon points="34,12 38,2 26,12" fill="#8c8c9e"/><polygon points="33,11 36,4 28,11" fill="#ffb3cc"/><ellipse cx="15" cy="18" rx="2.8" ry="3.8" fill="#ffea33"/><ellipse cx="25" cy="18" rx="2.8" ry="3.8" fill="#ffea33"/><rect x="14.3" y="16.2" width="1.4" height="3.6" fill="#2db83d"/><rect x="24.3" y="16.2" width="1.4" height="3.6" fill="#2db83d"/><circle cx="17" cy="24" r="2.5" fill="#f3f3f6"/><circle cx="23" cy="24" r="2.5" fill="#f3f3f6"/><circle cx="20" cy="22.5" r="1.6" fill="#ff5c5c"/></svg>`,
+      jerry: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="23" r="13" fill="#b57a3e"/><circle cx="9" cy="13" r="7.5" fill="#b57a3e"/><circle cx="9" cy="13" r="5" fill="#ffb3cc"/><circle cx="31" cy="13" r="7.5" fill="#b57a3e"/><circle cx="31" cy="13" r="5" fill="#ffb3cc"/><ellipse cx="16" cy="20" rx="2" ry="3" fill="#000"/><ellipse cx="24" cy="20" rx="2" ry="3" fill="#000"/><circle cx="20" cy="25" r="3.5" fill="#ffd8a8"/><circle cx="20" cy="23.8" r="1.5" fill="#000"/></svg>`,
+      spike: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="15" fill="#cfd8dc"/><path d="M8 12c-2 2-2 6 0 8M32 12c2 2 2 6 0 8" stroke="#cfd8dc" stroke-width="3" fill="none"/><rect x="10" y="24" width="20" height="4" fill="#d32f2f"/><ellipse cx="14" cy="17" rx="2.5" ry="3.5" fill="#fff"/><ellipse cx="26" cy="17" rx="2.5" ry="3.5" fill="#fff"/><circle cx="14" cy="17" r="1" fill="#000"/><circle cx="26" cy="17" r="1" fill="#000"/><ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#000"/></svg>`,
+      nibbles: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="23" r="13" fill="#b0bec5"/><circle cx="9" cy="14" r="7.2" fill="#b0bec5"/><circle cx="9" cy="14" r="4.8" fill="#ffcdd2"/><circle cx="31" cy="14" r="7.2" fill="#b0bec5"/><circle cx="31" cy="14" r="4.8" fill="#ffcdd2"/><ellipse cx="16" cy="20" rx="1.8" ry="2.8" fill="#000"/><ellipse cx="24" cy="20" rx="1.8" ry="2.8" fill="#000"/><circle cx="20" cy="24.5" r="3" fill="#ffd8a8"/><circle cx="20" cy="23.5" r="1.3" fill="#000"/></svg>`,
+
+      // SQUID GAME
+      squid_guard: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="#ff007f"/><circle cx="20" cy="20" r="14" fill="#0f0f12"/><path d="M20 11l7 14H13z" stroke="#fff" stroke-width="2" fill="none"/></svg>`,
+      squid_frontman: `<svg viewBox="0 0 40 40" width="40" height="40"><polygon points="20,2 38,12 32,36 8,36 2,12" fill="#111"/><polygon points="20,8 34,16 30,32 10,32 6,16" fill="#333"/><ellipse cx="14" cy="18" rx="2.5" ry="1.5" fill="#fff" opacity="0.3"/><ellipse cx="26" cy="18" rx="2.5" ry="1.5" fill="#fff" opacity="0.3"/></svg>`,
+      squid_pig: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="#ffd54f"/><ellipse cx="20" cy="22" rx="5" ry="3.5" fill="#ffb300"/><circle cx="18" cy="22" r="1" fill="#000"/><circle cx="22" cy="22" r="1" fill="#000"/><circle cx="13" cy="14" r="2" fill="#000"/><circle cx="27" cy="14" r="2" fill="#000"/></svg>`,
+      squid_symbol: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="#ff007f"/><circle cx="20" cy="20" r="14" fill="#0f0f12"/><circle cx="20" cy="20" r="5" stroke="#fff" stroke-width="2" fill="none"/></svg>`,
+
+      // PAW PATROL
+      ryder: `<svg viewBox="0 0 40 40" width="40" height="40"><path d="M6 18c0-8 6-12 14-12s14 4 14 12Z" fill="#795548"/><circle cx="20" cy="24" r="13" fill="#ffd8a8"/><circle cx="14" cy="21" r="2" fill="#000"/><circle cx="26" cy="21" r="2" fill="#000"/><path d="M12 18h16" stroke="#ff3333" stroke-width="2.5"/><path d="M17 28q3 2 6 0" stroke="#000" stroke-width="1.2" fill="none"/></svg>`,
+      chase: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="15" fill="#8B5A2B"/><path d="M8 13A14 14 0 0 1 32 13Z" fill="#0055ff"/><rect x="7" y="12" width="26" height="2.5" fill="#111"/><ellipse cx="7" cy="22" rx="2.2" ry="4.5" fill="#5c3a21"/><ellipse cx="33" cy="22" rx="2.2" ry="4.5" fill="#5c3a21"/><circle cx="15" cy="18" r="2" fill="#fff"/><circle cx="25" cy="18" r="2" fill="#fff"/><circle cx="15" cy="18" r="1" fill="#000"/><circle cx="25" cy="18" r="1" fill="#000"/><circle cx="20" cy="25" r="3.2" fill="#d2b48c"/><circle cx="20" cy="23.5" r="1.6" fill="#000"/></svg>`,
+      marshall: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="15" fill="#ffffff"/><circle cx="8" cy="15" r="2" fill="#000"/><circle cx="32" cy="16" r="1.5" fill="#000"/><circle cx="12" cy="28" r="2" fill="#000"/><circle cx="28" cy="27" r="1.5" fill="#000"/><path d="M8 13a14 14 0 0 1 24 0z" fill="#ff3333"/><ellipse cx="6" cy="22" rx="2" ry="4" fill="#ffffff"/><ellipse cx="34" cy="22" rx="2" ry="4" fill="#ffffff"/><circle cx="15" cy="19" r="2" fill="#fff"/><circle cx="25" cy="19" r="2" fill="#fff"/><circle cx="15" cy="19" r="1" fill="#000"/><circle cx="25" cy="19" r="1" fill="#000"/><ellipse cx="20" cy="24" rx="3" ry="2" fill="#d2b48c"/><circle cx="20" cy="23" r="1.5" fill="#000"/></svg>`,
+      skye: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#ffd8a8"/><path d="M9 13a13 13 0 0 1 22 0z" fill="#f48fb1"/><ellipse cx="7" cy="22" rx="2.5" ry="5.5" fill="#b57a3e"/><ellipse cx="33" cy="22" rx="2.5" ry="5.5" fill="#b57a3e"/><circle cx="15" cy="19" r="2.2" fill="#fff"/><circle cx="25" cy="19" r="2.2" fill="#fff"/><circle cx="15" cy="19" r="1.1" fill="#e02f62"/><circle cx="25" cy="19" r="1.1" fill="#e02f62"/></svg>`,
+      rubble: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#b57a3e"/><path d="M8 13A13 13 0 0 1 32 13Z" fill="#ffd54f"/><rect x="7" y="12" width="26" height="2.5" fill="#111"/><circle cx="15" cy="19" r="2" fill="#fff"/><circle cx="25" cy="19" r="2" fill="#fff"/><ellipse cx="20" cy="25" rx="3.5" ry="2" fill="#ffd8a8"/><circle cx="20" cy="23.5" r="1.5" fill="#000"/></svg>`,
+      rocky: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#90a4ae"/><path d="M8 13A13 13 0 0 1 32 13Z" fill="#4caf50"/><rect x="7" y="12" width="26" height="2.5" fill="#111"/><ellipse cx="7" cy="22" rx="2.5" ry="4" fill="#90a4ae"/><ellipse cx="33" cy="22" rx="2.5" ry="4" fill="#90a4ae"/><circle cx="15" cy="19" r="2" fill="#fff"/><circle cx="25" cy="19" r="2" fill="#fff"/><ellipse cx="20" cy="25" rx="3" ry="2" fill="#cfd8dc"/><circle cx="20" cy="23.5" r="1.5" fill="#000"/></svg>`,
+      zuma: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#8d6e63"/><path d="M8 13A13 13 0 0 1 32 13Z" fill="#ff9800"/><rect x="7" y="12" width="26" height="2.5" fill="#111"/><circle cx="15" cy="19" r="2" fill="#fff"/><circle cx="25" cy="19" r="2" fill="#fff"/><circle cx="15" cy="19" r="1" fill="#000"/><circle cx="25" cy="19" r="1" fill="#000"/></svg>`,
+
+      // MASHA AND THE BEAR
+      masha: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="20" r="18" fill="#e02f62"/><circle cx="20" cy="21" r="13.5" fill="#ffd8a8"/><path d="M10 14a12 12 0 0 1 20 0z" fill="#ffe57f"/><circle cx="15" cy="20" r="2.4" fill="#fff"/><circle cx="25" cy="20" r="2.4" fill="#fff"/><circle cx="15" cy="20" r="1.3" fill="#4caf50"/><circle cx="25" cy="20" r="1.3" fill="#4caf50"/><circle cx="15" cy="20" r="0.6" fill="#000"/><circle cx="25" cy="20" r="0.6" fill="#000"/><path d="M17 25q3 2 6 0" stroke="#e02f62" stroke-width="1.5" fill="none"/></svg>`,
+      bear: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="15" fill="#5d4037"/><circle cx="8" cy="11" r="5" fill="#5d4037"/><circle cx="8" cy="11" r="3" fill="#ffd8a8"/><circle cx="32" cy="11" r="5" fill="#5d4037"/><circle cx="32" cy="11" r="3" fill="#ffd8a8"/><circle cx="15" cy="17" r="2.2" fill="#fff"/><circle cx="25" cy="17" r="2.2" fill="#fff"/><circle cx="15" cy="17" r="1.2" fill="#000"/><circle cx="25" cy="17" r="1.2" fill="#000"/><ellipse cx="20" cy="24" rx="4.8" ry="3" fill="#ffd8a8"/><circle cx="20" cy="22.5" r="1.8" fill="#000"/></svg>`,
+      tiger: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#ff9800"/><path d="M8 12l4 3M32 12l-4 3M6 22l6 1M34 22l-6 1" stroke="#000" stroke-width="2" fill="none"/><circle cx="15" cy="18" r="2.2" fill="#fff"/><circle cx="25" cy="18" r="2.2" fill="#fff"/><ellipse cx="20" cy="23" rx="3.5" ry="2" fill="#fff"/><circle cx="20" cy="22" r="1.2" fill="#000"/></svg>`,
+      rabbit: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="23" r="13" fill="#cfd8dc"/><ellipse cx="14" cy="9" rx="3.2" ry="9" fill="#cfd8dc"/><ellipse cx="14" cy="9" rx="1.8" ry="6.5" fill="#ffcdd2"/><ellipse cx="26" cy="9" rx="3.2" ry="9" fill="#cfd8dc"/><ellipse cx="26" cy="9" rx="1.8" ry="6.5" fill="#ffcdd2"/><circle cx="15" cy="20" r="2.2" fill="#fff"/><circle cx="25" cy="20" r="2.2" fill="#fff"/><circle cx="20" cy="24" r="1.5" fill="#ff8a80"/></svg>`,
+      pig: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="21" r="14" fill="#f48fb1"/><ellipse cx="20" cy="23" rx="4.8" ry="3.2" fill="#f06292"/><circle cx="18" cy="23" r="0.8" fill="#000"/><circle cx="22" cy="23" r="0.8" fill="#000"/><circle cx="14" cy="16" r="1.8" fill="#000"/><circle cx="26" cy="16" r="1.8" fill="#000"/></svg>`,
+      wolf: `<svg viewBox="0 0 40 40" width="40" height="40"><circle cx="20" cy="22" r="14" fill="#90a4ae"/><polygon points="8,13 4,4 14,11" fill="#90a4ae"/><polygon points="32,13 36,4 26,11" fill="#90a4ae"/><circle cx="14" cy="18" r="2" fill="#ffd54f"/><circle cx="26" cy="18" r="2" fill="#ffd54f"/><ellipse cx="20" cy="23" rx="3.2" ry="2" fill="#37474f"/><circle cx="20" cy="22" r="1" fill="#000"/></svg>`
+    };
+
     // Define theme-specific moving characters (strictly only show cartoon series characters!)
     let characters = [];
     if (theme === 'doraemon') {
       // Doraemon, Nobita, Shizuka, Suneo, Gian
       characters = [
-        { text: '🐱', type: 'glide-left' }, // Doraemon
-        { text: '👦', type: 'glide-right' }, // Nobita
-        { text: '👧', type: 'float-up' },    // Shizuka
-        { text: '🧒', type: 'float-down' },  // Suneo
-        { text: '👨', type: 'float-up' }     // Gian
+        { svg: characterSVGs.doraemon, type: 'glide-left' },
+        { svg: characterSVGs.nobita, type: 'glide-right' },
+        { svg: characterSVGs.shizuka, type: 'float-up' },
+        { svg: characterSVGs.suneo, type: 'float-down' },
+        { svg: characterSVGs.gian, type: 'float-up' }
       ];
     } else if (theme === 'squidgame') {
-      // Circle Guard, Triangle Guard, Square Guard, Frontman, VIP Pig, Squid
+      // Circle Guard, Triangle Guard, Square Guard, Frontman, VIP Pig, Squid Symbol
       characters = [
-        { text: '◯', type: 'float-down' },
-        { text: '🔺', type: 'float-up' },
-        { text: '☐', type: 'float-up' },
-        { text: '🎭', type: 'glide-right' }, // Frontman
-        { text: '🐷', type: 'float-down' },  // VIP Pig
-        { text: '🦑', type: 'glide-left' }   // Squid
+        { svg: characterSVGs.squid_guard, type: 'float-down' },
+        { svg: characterSVGs.squid_frontman, type: 'glide-right' },
+        { svg: characterSVGs.squid_pig, type: 'float-up' },
+        { svg: characterSVGs.squid_symbol, type: 'glide-left' }
       ];
     } else if (theme === 'shinchan') {
       // Shinchan, Shiro, Masao, Kazama, Nene, Bo-chan
       characters = [
-        { text: '👦', type: 'glide-right' }, // Shinchan
-        { text: '🐶', type: 'glide-left' },  // Shiro
-        { text: '👶', type: 'float-up' },    // Masao
-        { text: '👦', type: 'float-down' },  // Kazama
-        { text: '👧', type: 'float-up' },    // Nene
-        { text: '👃', type: 'float-down' }   // Bo-chan
+        { svg: characterSVGs.shinchan, type: 'glide-right' },
+        { svg: characterSVGs.shiro, type: 'glide-left' },
+        { svg: characterSVGs.masao, type: 'float-up' },
+        { svg: characterSVGs.kazama, type: 'float-down' },
+        { svg: characterSVGs.nene, type: 'float-up' },
+        { svg: characterSVGs.bo, type: 'float-down' }
       ];
     } else if (theme === 'tomjerry') {
       // Tom, Jerry, Spike, Nibbles
       characters = [
-        { text: '🐱', type: 'glide-right', speed: '11s', delay: '-1s' }, // Tom
-        { text: '🐭', type: 'glide-right', speed: '11s', delay: '0s' },  // Jerry
-        { text: '🐶', type: 'glide-left' }, // Spike
-        { text: '🐭', type: 'float-up' }    // Nibbles/Tuffy
+        { svg: characterSVGs.tom, type: 'glide-right', speed: '11s', delay: '-1s' },
+        { svg: characterSVGs.jerry, type: 'glide-right', speed: '11s', delay: '0s' },
+        { svg: characterSVGs.spike, type: 'glide-left' },
+        { svg: characterSVGs.nibbles, type: 'float-up' }
       ];
     } else if (theme === 'pawpatrol') {
       // Ryder, Chase, Marshall, Skye, Rubble, Rocky, Zuma
       characters = [
-        { text: '👦', type: 'glide-right' }, // Ryder
-        { text: '👮', type: 'glide-left' },  // Chase
-        { text: '👨‍🚒', type: 'float-up' },    // Marshall
-        { text: '🚁', type: 'float-down' },  // Skye
-        { text: '👷', type: 'float-up' },    // Rubble
-        { text: '♻️', type: 'float-down' },  // Rocky
-        { text: '⛵', type: 'float-up' }     // Zuma
+        { svg: characterSVGs.ryder, type: 'glide-right' },
+        { svg: characterSVGs.chase, type: 'glide-left' },
+        { svg: characterSVGs.marshall, type: 'float-up' },
+        { svg: characterSVGs.skye, type: 'float-down' },
+        { svg: characterSVGs.rubble, type: 'float-up' },
+        { svg: characterSVGs.rocky, type: 'float-down' },
+        { svg: characterSVGs.zuma, type: 'float-up' }
       ];
     } else if (theme === 'masha') {
       // Masha, Bear, Tiger, Rabbit, Pig, Wolf
       characters = [
-        { text: '👧', type: 'glide-right' }, // Masha
-        { text: '🐻', type: 'glide-left' },  // Bear
-        { text: '🐯', type: 'float-up' },    // Tiger
-        { text: '🐰', type: 'float-down' },  // Rabbit
-        { text: '🐷', type: 'float-up' },    // Pig
-        { text: '🐺', type: 'float-down' }   // Wolf
+        { svg: characterSVGs.masha, type: 'glide-right' },
+        { svg: characterSVGs.bear, type: 'glide-left' },
+        { svg: characterSVGs.tiger, type: 'float-up' },
+        { svg: characterSVGs.rabbit, type: 'float-down' },
+        { svg: characterSVGs.pig, type: 'float-up' },
+        { svg: characterSVGs.wolf, type: 'float-down' }
       ];
     }
 
@@ -1745,7 +1790,7 @@ class SlithifyGame {
       const charConfig = characters[i % characters.length];
       const item = document.createElement('div');
       item.className = `floating-item ${charConfig.type}`;
-      item.textContent = charConfig.text;
+      item.innerHTML = charConfig.svg;
 
       // Assign position, delay, and speed
       if (charConfig.type.startsWith('float')) {
