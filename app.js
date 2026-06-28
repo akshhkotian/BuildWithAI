@@ -40,6 +40,7 @@ class SlithifyGame {
       maze: 'none',       // Current maze ID
       mazeWalls: [],      // Coordinates of walls
       soundEnabled: true,
+      musicEnabled: true, // Background Music state
       crtEnabled: true,
       gridEnabled: true,
       tickRate: 100,      // Current ms per game tick
@@ -103,6 +104,16 @@ class SlithifyGame {
     this.hudScore = document.getElementById('hudScore');
     this.hudSpeed = document.getElementById('hudSpeed');
     this.hudLength = document.getElementById('hudLength');
+
+    // Guide, Music and theme switcher overlays
+    this.floatingGuideBtn = document.getElementById('floatingGuideBtn');
+    this.floatingMusicBtn = document.getElementById('floatingMusicBtn');
+    this.guideModal = document.getElementById('guideModal');
+    this.guideCloseBtn = document.getElementById('guideCloseBtn');
+    this.guideModalOverlay = document.getElementById('guideModalOverlay');
+    this.countdownScreen = document.getElementById('countdownScreen');
+    this.countdownNumber = document.getElementById('countdownNumber');
+    this.themePillBtns = document.querySelectorAll('.theme-pill-btn');
   }
 
   /* --- Game Settings Configuration --- */
@@ -112,6 +123,7 @@ class SlithifyGame {
     const difficulty = localStorage.getItem('slithify_difficulty') || 'medium';
     const maze = localStorage.getItem('slithify_maze') || 'none';
     const sound = localStorage.getItem('slithify_sound') !== 'false';
+    const music = localStorage.getItem('slithify_music') !== 'false';
     const crt = localStorage.getItem('slithify_crt') !== 'false';
     const grid = localStorage.getItem('slithify_grid') !== 'false';
 
@@ -120,6 +132,7 @@ class SlithifyGame {
     this.state.maze = maze;
     this.state.mazeWalls = this.mazes[maze] || [];
     this.state.soundEnabled = sound;
+    this.state.musicEnabled = music;
     this.state.crtEnabled = crt;
     this.state.gridEnabled = grid;
 
@@ -134,6 +147,7 @@ class SlithifyGame {
     this.applyTheme(theme);
     this.applyCRT(crt);
     this.applyDifficulty(difficulty);
+    this.updateMusicButtonUI();
   }
 
   saveSettings() {
@@ -141,6 +155,7 @@ class SlithifyGame {
     localStorage.setItem('slithify_difficulty', this.state.difficulty);
     localStorage.setItem('slithify_maze', this.state.maze);
     localStorage.setItem('slithify_sound', this.state.soundEnabled);
+    localStorage.setItem('slithify_music', this.state.musicEnabled);
     localStorage.setItem('slithify_crt', this.state.crtEnabled);
     localStorage.setItem('slithify_grid', this.state.gridEnabled);
   }
@@ -162,8 +177,29 @@ class SlithifyGame {
       }
     }
 
+    // Update switcher pill active button states
+    if (this.themePillBtns) {
+      this.themePillBtns.forEach(btn => {
+        if (btn.getAttribute('data-theme') === theme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Sync sidebar selector
+    if (this.themeSelect && this.themeSelect.value !== theme) {
+      this.themeSelect.value = theme;
+    }
+
     // Initialize/Refresh drifting background elements
     this.initFloatingBackground(theme);
+
+    // Update BGM if enabled
+    if (this.sounds && this.state.musicEnabled) {
+      this.sounds.changeBGMTheme(theme);
+    }
   }
 
   applyCRT(enabled) {
@@ -282,6 +318,40 @@ class SlithifyGame {
 
     // Touch Swipes setup
     this.setupTouchSwipe();
+
+    // Floating Actions Guide & Music
+    if (this.floatingGuideBtn) {
+      this.floatingGuideBtn.addEventListener('click', () => this.toggleGuide(true));
+    }
+    if (this.guideCloseBtn) {
+      this.guideCloseBtn.addEventListener('click', () => this.toggleGuide(false));
+    }
+    if (this.guideModalOverlay) {
+      this.guideModalOverlay.addEventListener('click', () => this.toggleGuide(false));
+    }
+    if (this.floatingMusicBtn) {
+      this.floatingMusicBtn.addEventListener('click', () => this.toggleMusic());
+    }
+
+    // Mid-game theme pill switchers
+    if (this.themePillBtns) {
+      this.themePillBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const selectedTheme = btn.getAttribute('data-theme');
+          this.applyTheme(selectedTheme);
+          this.saveSettings();
+          this.sounds.playClick();
+        });
+      });
+    }
+
+    // Initialize AudioContext & BGM autoplay on user interaction
+    document.body.addEventListener('click', () => {
+      this.sounds.initAudio();
+      if (this.state.musicEnabled && !this.sounds.bgmPlaying) {
+        this.sounds.startBGM(this.state.theme);
+      }
+    }, { once: true });
   }
 
   setupTouchSwipe() {
@@ -345,6 +415,14 @@ class SlithifyGame {
       if (code === 'Space') this.togglePause();
     } else if (this.state.gameStatus === 'PAUSED') {
       if (code === 'Space') this.togglePause();
+    } else if (this.state.gameStatus === 'COUNTDOWN') {
+      if (code === 'Space') {
+        clearInterval(this.countdownInterval);
+        this.countdownScreen.classList.remove('active');
+        this.state.gameStatus = 'PAUSED';
+        this.pausedScreen.classList.add('active');
+        this.sounds.playPause(this.state.soundEnabled);
+      }
     } else if (this.state.gameStatus === 'IDLE') {
       if (code === 'Space' || code === 'Enter') this.startGame();
     } else if (this.state.gameStatus === 'GAMEOVER') {
@@ -377,6 +455,18 @@ class SlithifyGame {
 
   /* --- Game Actions --- */
   startGame() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+    if (this.countdownScreen) {
+      this.countdownScreen.classList.remove('active');
+    }
+    
+    // Start background music when playing if enabled
+    if (this.state.musicEnabled && !this.sounds.bgmPlaying) {
+      this.sounds.startBGM(this.state.theme);
+    }
+
     this.sounds.initAudio();
     this.sounds.playClick();
     
@@ -415,10 +505,78 @@ class SlithifyGame {
       this.pausedScreen.classList.add('active');
       this.sounds.playPause(this.state.soundEnabled);
     } else if (this.state.gameStatus === 'PAUSED') {
-      this.state.gameStatus = 'PLAYING';
-      this.pausedScreen.classList.remove('active');
-      this.state.lastTickTime = performance.now();
-      this.sounds.playResume(this.state.soundEnabled);
+      this.startResumeCountdown();
+    }
+  }
+
+  startResumeCountdown() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+    
+    this.state.gameStatus = 'COUNTDOWN';
+    this.pausedScreen.classList.remove('active');
+    this.countdownScreen.classList.add('active');
+    
+    let count = 3;
+    this.countdownNumber.textContent = count;
+    this.countdownNumber.className = 'countdown-number bounce-in';
+    this.sounds.playCountdownBeep(count, this.state.soundEnabled);
+
+    this.countdownInterval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        this.countdownNumber.textContent = count;
+        this.countdownNumber.classList.remove('bounce-in');
+        void this.countdownNumber.offsetWidth; // Trigger reflow
+        this.countdownNumber.classList.add('bounce-in');
+        this.sounds.playCountdownBeep(count, this.state.soundEnabled);
+      } else if (count === 0) {
+        this.countdownNumber.textContent = 'GO!';
+        this.countdownNumber.classList.remove('bounce-in');
+        void this.countdownNumber.offsetWidth; // Trigger reflow
+        this.countdownNumber.classList.add('bounce-in');
+        this.sounds.playCountdownBeep(0, this.state.soundEnabled);
+      } else {
+        clearInterval(this.countdownInterval);
+        this.countdownScreen.classList.remove('active');
+        this.state.gameStatus = 'PLAYING';
+        this.state.lastTickTime = performance.now();
+      }
+    }, 1000);
+  }
+
+  toggleMusic() {
+    this.state.musicEnabled = !this.state.musicEnabled;
+    this.saveSettings();
+    this.updateMusicButtonUI();
+    this.sounds.playClick();
+    if (this.state.musicEnabled) {
+      this.sounds.startBGM(this.state.theme);
+    } else {
+      this.sounds.stopBGM();
+    }
+  }
+
+  updateMusicButtonUI() {
+    if (this.floatingMusicBtn) {
+      this.floatingMusicBtn.textContent = this.state.musicEnabled ? '🎵' : '🔇';
+      if (this.state.musicEnabled) {
+        this.floatingMusicBtn.style.borderColor = 'var(--accent-color)';
+        this.floatingMusicBtn.style.boxShadow = 'var(--accent-glow)';
+      } else {
+        this.floatingMusicBtn.style.borderColor = 'var(--panel-border)';
+        this.floatingMusicBtn.style.boxShadow = 'none';
+      }
+    }
+  }
+
+  toggleGuide(show) {
+    this.sounds.playClick();
+    if (show) {
+      this.guideModal.classList.add('active');
+    } else {
+      this.guideModal.classList.remove('active');
     }
   }
 
@@ -1325,34 +1483,79 @@ class SlithifyGame {
     // Clear existing floating elements
     this.bgFloating.innerHTML = '';
 
-    // Decide items by theme
-    let icons = ['☁️', '🔔', '🎈', '☁️'];
+    // Define theme-specific moving characters and backgrounds
+    let characters = [];
     if (theme === 'doraemon') {
-      icons = ['☁️', '🔔', '🎈', '☁️', '🔵'];
+      // Doraemon, Nobita, Doracakes, bells, clouds, hearts
+      characters = [
+        { text: '💙', type: 'float-up' },
+        { text: '🥞', type: 'float-down' },
+        { text: '🔔', type: 'float-up' },
+        { text: '☁️', type: 'glide-right' },
+        { text: '🐱', type: 'glide-left' }, // Doraemon
+        { text: '👦', type: 'glide-right' }, // Nobita
+        { text: '🎈', type: 'float-up' }
+      ];
     } else if (theme === 'squidgame') {
-      icons = ['◯', '△', '☐', '🦑', '💖', '📦'];
+      // Guards, Frontman, Dalgonas, piggy banks
+      characters = [
+        { text: '🔺', type: 'float-up' },
+        { text: '◯', type: 'float-down' },
+        { text: '☐', type: 'float-up' },
+        { text: '🎭', type: 'glide-right' }, // Frontman
+        { text: '🦑', type: 'glide-left' },  // Squid
+        { text: '🐷', type: 'float-up' },  // Piggy bank
+        { text: '🍪', type: 'float-down' }
+      ];
     } else if (theme === 'shinchan') {
-      icons = ['⭐', '🦖', '🍬', '✨', '🐶', '🍑'];
+      // Shinchan, Shiro, dinosaur, star biscuits
+      characters = [
+        { text: '⭐', type: 'float-up' },
+        { text: '🐶', type: 'glide-right' }, // Shiro
+        { text: '🦖', type: 'glide-left' },  // Chocobi Dinosaur
+        { text: '👦', type: 'glide-right' }, // Shinchan
+        { text: '🍬', type: 'float-down' },
+        { text: '✨', type: 'float-up' }
+      ];
     } else if (theme === 'tomjerry') {
-      icons = ['🧀', '🐾', '🥛', '🧀', '🐭', '🐱'];
+      // Tom cat, Jerry mouse, Spike, cheese slices, milk
+      characters = [
+        { text: '🐱', type: 'glide-right', speed: '11s', delay: '-1s' },  // Tom chasing Jerry!
+        { text: '🐭', type: 'glide-right', speed: '11s', delay: '0s' },   // Jerry running ahead
+        { text: '🧀', type: 'float-up' },
+        { text: '🥛', type: 'float-down' },
+        { text: '🐶', type: 'glide-left' }, // Spike
+        { text: '🐾', type: 'float-up' }
+      ];
     }
 
-    const maxItems = 12;
-    for (let i = 0; i < maxItems; i++) {
+    const numItems = 15;
+    for (let i = 0; i < numItems; i++) {
+      const charConfig = characters[i % characters.length];
       const item = document.createElement('div');
-      item.className = 'floating-item';
-      item.textContent = icons[Math.floor(Math.random() * icons.length)];
-      
-      // Randomize layout properties
-      item.style.left = `${Math.random() * 100}vw`;
-      // Stagger start delays so they enter progressively
-      item.style.animationDelay = `${Math.random() * -14}s`;
-      item.style.animationDuration = `${10 + Math.random() * 10}s`;
-      
-      const scale = 0.5 + Math.random() * 0.8;
+      item.className = `floating-item ${charConfig.type}`;
+      item.textContent = charConfig.text;
+
+      // Assign position, delay, and speed
+      if (charConfig.type.startsWith('float')) {
+        item.style.left = `${Math.random() * 100}vw`;
+        item.style.animationName = charConfig.type === 'float-up' ? 'floatUp' : 'floatDown';
+        item.style.animationDuration = `${12 + Math.random() * 8}s`;
+        item.style.animationDelay = `${Math.random() * -15}s`;
+      } else {
+        // Glide animations
+        item.style.top = `${15 + Math.random() * 70}vh`; // keep away from edges
+        item.style.animationName = charConfig.type === 'glide-right' ? 'glideRight' : 'glideLeft';
+        item.style.animationDuration = charConfig.speed || `${14 + Math.random() * 10}s`;
+        item.style.animationDelay = charConfig.delay || `${Math.random() * -15}s`;
+      }
+
+      const scale = 0.5 + Math.random() * 0.7;
       item.style.transform = `scale(${scale})`;
-      item.style.opacity = `${0.04 + Math.random() * 0.12}`;
       
+      // Keep ambient character visibility
+      item.style.opacity = `${0.08 + Math.random() * 0.14}`;
+
       this.bgFloating.appendChild(item);
     }
   }
@@ -1719,6 +1922,127 @@ class SoundEngine {
     setTimeout(() => this.playOscillator(330, 330, 0.08, 'square', 0.15), t);
     setTimeout(() => this.playOscillator(392, 392, 0.08, 'square', 0.15), t * 2);
     setTimeout(() => this.playOscillator(523, 1046, 0.35, 'square', 0.12), t * 3);
+  }
+
+  playCountdownBeep(number, enabled) {
+    if (!enabled) return;
+    if (number === 0) {
+      // High pitch "GO!" beep
+      this.playOscillator(880, 1200, 0.3, 'sine', 0.15);
+    } else {
+      // Standard tick beep
+      this.playOscillator(440, 440, 0.15, 'sine', 0.12);
+    }
+  }
+
+  startBGM(theme) {
+    if (!this.ctx) this.initAudio();
+    if (!this.ctx) return;
+    if (this.bgmPlaying) return;
+    
+    this.bgmPlaying = true;
+    this.bgmIndex = 0;
+    
+    this.setBGMThemeMelody(theme);
+    this.playNextBgmNote();
+  }
+  
+  setBGMThemeMelody(theme) {
+    if (theme === 'doraemon') {
+      // Cute bubble theme
+      this.bgmMelody = [
+        [392.00, 1], [440.00, 1], [493.88, 1], [523.25, 2], [523.25, 1],
+        [493.88, 1], [440.00, 1], [392.00, 2], [392.00, 1],
+        [349.23, 1], [392.00, 1], [440.00, 1], [493.88, 2], [493.88, 1],
+        [440.00, 1], [349.23, 1], [392.00, 2]
+      ];
+      this.bgmTickTime = 200;
+    } else if (theme === 'squidgame') {
+      // Mysterious soldier theme
+      this.bgmMelody = [
+        [220.00, 2], [261.63, 2], [293.66, 2], [220.00, 4],
+        [220.00, 2], [261.63, 2], [293.66, 2], [329.63, 4],
+        [349.23, 2], [329.63, 2], [293.66, 2], [220.00, 6]
+      ];
+      this.bgmTickTime = 250;
+    } else if (theme === 'shinchan') {
+      // Bouncy chiptune theme
+      this.bgmMelody = [
+        [523.25, 1], [587.33, 1], [659.25, 1], [523.25, 1],
+        [659.25, 1], [523.25, 1], [659.25, 2],
+        [587.33, 1], [698.46, 1], [783.99, 1], [587.33, 1],
+        [783.99, 1], [587.33, 1], [783.99, 2]
+      ];
+      this.bgmTickTime = 160;
+    } else if (theme === 'tomjerry') {
+      // Playful cat-and-mouse retro swing jazz
+      this.bgmMelody = [
+        [196.00, 1], [220.00, 1], [246.94, 1], [293.66, 1],
+        [329.63, 1], [293.66, 1], [261.63, 1], [220.00, 1],
+        [196.00, 1], [246.94, 1], [293.66, 1], [392.00, 1],
+        [329.63, 2], [293.66, 2]
+      ];
+      this.bgmTickTime = 220;
+    }
+  }
+
+  playNextBgmNote() {
+    if (!this.bgmPlaying || !this.ctx) return;
+    
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+    
+    const [freq, ticks] = this.bgmMelody[this.bgmIndex];
+    const duration = ticks * (this.bgmTickTime / 1000);
+    
+    try {
+      this.bgmOsc = this.ctx.createOscillator();
+      this.bgmGain = this.ctx.createGain();
+      
+      this.bgmOsc.type = 'triangle'; // Retro bell wave
+      this.bgmOsc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      
+      // Keep volume very low and pleasant
+      this.bgmGain.gain.setValueAtTime(0.018, this.ctx.currentTime);
+      this.bgmGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration * 0.95);
+      
+      this.bgmOsc.connect(this.bgmGain);
+      this.bgmGain.connect(this.ctx.destination);
+      
+      this.bgmOsc.start();
+      this.bgmOsc.stop(this.ctx.currentTime + duration);
+    } catch (e) {
+      console.warn("BGM Note play error:", e);
+    }
+    
+    this.bgmIndex = (this.bgmIndex + 1) % this.bgmMelody.length;
+    
+    this.bgmTimeout = setTimeout(() => {
+      this.playNextBgmNote();
+    }, ticks * this.bgmTickTime);
+  }
+  
+  stopBGM() {
+    this.bgmPlaying = false;
+    if (this.bgmTimeout) {
+      clearTimeout(this.bgmTimeout);
+      this.bgmTimeout = null;
+    }
+    if (this.bgmOsc) {
+      try {
+        this.bgmOsc.stop();
+      } catch (e) {}
+      this.bgmOsc = null;
+    }
+    this.bgmGain = null;
+  }
+  
+  changeBGMTheme(theme) {
+    if (this.bgmPlaying) {
+      this.stopBGM();
+      this.startBGM(theme);
+    }
   }
 }
 

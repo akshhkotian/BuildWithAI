@@ -17,6 +17,12 @@
   <!-- Scanline CRT screen background element (subtle ambient animation) -->
   <div class="ambient-glow" id="ambientGlow"></div>
 
+  <!-- Floating Action Buttons: Guide & Music -->
+  <div class="floating-actions-bar">
+    <button id="floatingGuideBtn" class="floating-action-btn" title="How to Play / Game Guide">📖</button>
+    <button id="floatingMusicBtn" class="floating-action-btn" title="Toggle Music">🎵</button>
+  </div>
+
   <div class="app-container">
     <header class="game-header">
       <h1 class="glitch-title" data-text="SLITHIFY">SLITHIFY</h1>
@@ -112,6 +118,14 @@
 
       <!-- CENTER PANEL: CRT MONITOR & PLAYFIELD -->
       <section class="screen-panel" aria-label="Game Playfield">
+        <!-- Cute Mid-Game Theme Switcher Pill -->
+        <div class="theme-switcher-pill" id="midGameThemeSwitcher">
+          <button class="theme-pill-btn active" data-theme="doraemon" title="Doraemon">🔵</button>
+          <button class="theme-pill-btn" data-theme="squidgame" title="Squid Game">🦑</button>
+          <button class="theme-pill-btn" data-theme="shinchan" title="Shinchan">⭐</button>
+          <button class="theme-pill-btn" data-theme="tomjerry" title="Tom & Jerry">🐱</button>
+        </div>
+
         <div class="cabinet-bezel">
           <!-- The outer ridge of our simulated vintage display -->
           <div class="crt-screen-wrapper" id="crtWrapper">
@@ -158,6 +172,13 @@
                 </div>
               </div>
 
+              <!-- Countdown screen overlay -->
+              <div class="screen-overlay" id="countdownScreen">
+                <div class="countdown-content">
+                  <div class="countdown-number" id="countdownNumber">3</div>
+                </div>
+              </div>
+
               <!-- Game over screen overlay -->
               <div class="screen-overlay" id="gameOverScreen">
                 <div class="splash-content">
@@ -177,6 +198,17 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- MOBILE CONTROL PAD -->
+        <div class="mobile-controls-wrapper" id="mobileControls">
+          <div class="d-pad">
+            <button id="dpadUp" class="dpad-btn up" aria-label="Move Up">▲</button>
+            <button id="dpadLeft" class="dpad-btn left" aria-label="Move Left">◀</button>
+            <button id="dpadCenter" class="dpad-btn center" aria-label="Pause/Action">⧗</button>
+            <button id="dpadRight" class="dpad-btn right" aria-label="Move Right">▶</button>
+            <button id="dpadDown" class="dpad-btn down" aria-label="Move Down">▼</button>
           </div>
         </div>
       </section>
@@ -218,20 +250,70 @@
       </section>
     </main>
 
-    <!-- MOBILE CONTROL PAD -->
-    <div class="mobile-controls-wrapper" id="mobileControls">
-      <div class="d-pad">
-        <button id="dpadUp" class="dpad-btn up" aria-label="Move Up">▲</button>
-        <button id="dpadLeft" class="dpad-btn left" aria-label="Move Left">◀</button>
-        <button id="dpadCenter" class="dpad-btn center" aria-label="Pause/Action">⧗</button>
-        <button id="dpadRight" class="dpad-btn right" aria-label="Move Right">▶</button>
-        <button id="dpadDown" class="dpad-btn down" aria-label="Move Down">▼</button>
-      </div>
-    </div>
-
     <footer class="game-footer">
       <p>&copy; 2026 Retro Arcade Corp. All rights reserved.</p>
     </footer>
+  </div>
+
+  <!-- Guide Modal -->
+  <div class="guide-modal" id="guideModal">
+    <div class="guide-modal-overlay" id="guideModalOverlay"></div>
+    <div class="guide-modal-content">
+      <button class="guide-close-btn" id="guideCloseBtn">&times;</button>
+      <div class="guide-header">
+        <span class="guide-icon">📖</span>
+        <h2>SLITHIFY GUIDE</h2>
+      </div>
+      <div class="guide-body">
+        <div class="guide-section">
+          <h3>🎮 HOW TO PLAY</h3>
+          <p>Guide the snake to eat the themed treats while avoiding walls and your own tail!</p>
+          <ul class="guide-controls-list">
+            <li><strong>Desktop:</strong> Use <span class="key-pill">W / A / S / D</span> or <span class="key-pill">↑ / ↓ / ← / →</span>. Press <span class="key-pill">Space</span> to pause/resume.</li>
+            <li><strong>Mobile:</strong> Tap the D-pad arrows below the screen or swipe on the screen. Tap center <span class="key-pill">⧗</span> to pause/resume.</li>
+          </ul>
+        </div>
+        
+        <div class="guide-section">
+          <h3>🌈 CUTE THEMES</h3>
+          <div class="guide-themes-grid">
+            <div class="guide-theme-item">
+              <span class="theme-emoji">🥞</span>
+              <div>
+                <strong>Doraemon:</strong> Eat delicious Dora Cakes! Avoid blue brick walls.
+              </div>
+            </div>
+            <div class="guide-theme-item">
+              <span class="theme-emoji">🍪</span>
+              <div>
+                <strong>Squid Game:</strong> Nibble Dalgona Candy and avoid pink hazard stripes.
+              </div>
+            </div>
+            <div class="guide-theme-item">
+              <span class="theme-emoji">🍬</span>
+              <div>
+                <strong>Shinchan:</strong> Snack on Pink Chocobi Stars and dodge garden hedges.
+              </div>
+            </div>
+            <div class="guide-theme-item">
+              <span class="theme-emoji">🧀</span>
+              <div>
+                <strong>Tom & Jerry:</strong> Grab Cheese Slices! Dodge wooden obstacles.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <h3>💡 TIPS & TRICKS</h3>
+          <ul>
+            <li>✨ <strong>Mid-Game Theme Switch:</strong> Swap themes instantly using the pill buttons above the game screen!</li>
+            <li>⏳ <strong>Safe Resume:</strong> Pausing and resuming gives you a 3-second safety timer before action starts.</li>
+            <li>🌟 <strong>Golden Treats:</strong> Look out for glowing golden foods that give triple points, but eat them fast!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>
