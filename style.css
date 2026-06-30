@@ -735,6 +735,44 @@ input:checked + .slider:before {
   aspect-ratio: 5 / 4;
 }
 
+/* Floating corner pause button */
+.corner-pause-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--panel-bg);
+  border: 3px solid var(--accent-color);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: none; /* Toggled via JS class '.visible' */
+  justify-content: center;
+  align-items: center;
+  z-index: 6; /* Render above overlay screens to remain clickable when paused */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.corner-pause-btn.visible {
+  display: flex;
+}
+
+.corner-pause-btn:hover {
+  transform: scale(1.1);
+  box-shadow: var(--accent-glow);
+}
+
+.corner-pause-btn:active {
+  transform: scale(0.92);
+}
+
 /* --- OVERLAY WINDOWS (SPLASH, GAME OVER, PAUSED) --- */
 .screen-overlay {
   position: absolute;

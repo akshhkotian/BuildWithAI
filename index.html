@@ -170,6 +170,9 @@
               <!-- Actual Snake Canvas -->
               <canvas id="gameCanvas" width="600" height="480"></canvas>
 
+              <!-- Corner Pause Button -->
+              <button id="cornerPauseBtn" class="corner-pause-btn" aria-label="Pause Game">⏸</button>
+
               <!-- Splash screen overlays -->
               <div class="screen-overlay active" id="splashScreen">
                 <div class="splash-content">
@@ -222,7 +225,7 @@
           <div class="d-pad">
             <button id="dpadUp" class="dpad-btn up" aria-label="Move Up">▲</button>
             <button id="dpadLeft" class="dpad-btn left" aria-label="Move Left">◀</button>
-            <button id="dpadCenter" class="dpad-btn center" aria-label="Pause/Action">⧗</button>
+            <div class="dpad-btn center" aria-hidden="true" style="pointer-events: none; cursor: default;"></div>
             <button id="dpadRight" class="dpad-btn right" aria-label="Move Right">▶</button>
             <button id="dpadDown" class="dpad-btn down" aria-label="Move Down">▼</button>
           </div>
@@ -286,7 +289,7 @@
           <p>Guide the snake to eat the themed treats while avoiding walls and your own tail!</p>
           <ul class="guide-controls-list">
             <li><strong>Desktop:</strong> Use <span class="key-pill">W / A / S / D</span> or <span class="key-pill">↑ / ↓ / ← / →</span>. Press <span class="key-pill">Space</span> to pause/resume.</li>
-            <li><strong>Mobile:</strong> Tap the D-pad arrows below the screen or swipe on the screen. Tap center <span class="key-pill">⧗</span> to pause/resume.</li>
+            <li><strong>Mobile:</strong> Tap the D-pad arrows below the screen or swipe on the screen. Tap the corner pause button <span class="key-pill">⏸</span> to pause/resume.</li>
           </ul>
         </div>
         

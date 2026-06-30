@@ -114,6 +114,7 @@ class SlithifyGame {
     this.countdownScreen = document.getElementById('countdownScreen');
     this.countdownNumber = document.getElementById('countdownNumber');
     this.themePillBtns = document.querySelectorAll('.theme-pill-btn');
+    this.cornerPauseBtn = document.getElementById('cornerPauseBtn');
   }
 
   /* --- Game Settings Configuration --- */
@@ -311,12 +312,11 @@ class SlithifyGame {
     bindDpad('dpadLeft', 'LEFT');
     bindDpad('dpadRight', 'RIGHT');
 
-    const centerPad = document.getElementById('dpadCenter');
-    if (centerPad) {
-      centerPad.addEventListener('click', () => this.handleKeyPress('Space'));
-      centerPad.addEventListener('touchend', (e) => {
+    if (this.cornerPauseBtn) {
+      this.cornerPauseBtn.addEventListener('click', () => this.togglePause());
+      this.cornerPauseBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
-        this.handleKeyPress('Space');
+        this.togglePause();
       });
     }
 
@@ -498,6 +498,10 @@ class SlithifyGame {
     this.pausedScreen.classList.remove('active');
     this.gameOverScreen.classList.remove('active');
 
+    if (this.cornerPauseBtn) {
+      this.cornerPauseBtn.classList.add('visible');
+    }
+
     this.state.gameStatus = 'PLAYING';
     this.state.lastTickTime = performance.now();
     this.updateHUD();
@@ -601,6 +605,9 @@ class SlithifyGame {
     }
 
     this.gameOverScreen.classList.add('active');
+    if (this.cornerPauseBtn) {
+      this.cornerPauseBtn.classList.remove('visible');
+    }
   }
 
   /* --- Spawning Mechanics --- */
